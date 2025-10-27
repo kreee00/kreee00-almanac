@@ -3,7 +3,7 @@ title: 'picoCTF: Hidden in Plainsight Writeup'
 published: 2025-10-28
 draft: false
 series: 'picoCTF'
-tags: ['picoctf', 'forensics', 'mwriteup', 'ctf']
+tags: ['picoctf', 'forensics', 'writeup', 'ctf']
 toc: false
 coverImage:
   src: './question.png'
