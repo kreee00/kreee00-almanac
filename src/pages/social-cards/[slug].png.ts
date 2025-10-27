@@ -1,4 +1,4 @@
-import siteConfig from '~/site.config'
+/*import siteConfig from '~/site.config'
 import { Resvg } from '@resvg/resvg-js'
 import type { APIContext, InferGetStaticPropsType } from 'astro'
 import satori, { type SatoriOptions } from 'satori'
@@ -78,6 +78,121 @@ const markup = (title: string, pubDate: string | undefined, author: string) =>
 type Props = InferGetStaticPropsType<typeof getStaticPaths>
 
 export async function GET(context: APIContext) {
+  const { pubDate, title, author } = context.props as Props
+  const svg = await satori(markup(title, pubDate, author) as ReactNode, ogOptions)
+  const png = new Resvg(svg).render().asPng()
+  return new Response(png, {
+    headers: {
+      'Cache-Control': 'public, max-age=31536000, immutable',
+      'Content-Type': 'image/png',
+    },
+  })
+}
+
+export async function getStaticPaths() {
+  const posts = await getSortedPosts()
+  return posts
+    .map((post) => ({
+      params: { slug: post.id },
+      props: {
+        pubDate: post.data.published ? dateString(post.data.published) : undefined,
+        title: post.data.title,
+        author: post.data.author || siteConfig.author,
+      },
+    }))
+    .concat([
+      {
+        params: { slug: '__default' },
+        props: { pubDate: undefined, title: siteConfig.title, author: siteConfig.author },
+      },
+    ])
+}
+*/
+
+import siteConfig from '~/site.config'
+import { Resvg } from '@resvg/resvg-js'
+import type { APIContext, InferGetStaticPropsType } from 'astro'
+import satori, { type SatoriOptions } from 'satori'
+import { html } from 'satori-html'
+import { dateString, getSortedPosts, resolveThemeColorStyles } from '~/utils'
+import path from 'path'
+import fs from 'fs'
+import type { ReactNode } from 'react'
+
+// ✅ CACHE HEAVY OPERATIONS - Load once per build
+let cachedFontData: Buffer | null = null
+let cachedAvatarBase64: string | undefined
+let cachedThemeStyles: any = null
+
+// ✅ Pre-load expensive resources
+async function initializeCache() {
+  if (!cachedFontData) {
+    const fontPath = path.resolve(
+      './node_modules/@expo-google-fonts/jetbrains-mono/400Regular/JetBrainsMono_400Regular.ttf',
+    )
+    cachedFontData = fs.readFileSync(fontPath)
+  }
+
+  if (!cachedThemeStyles) {
+    const defaultTheme = siteConfig.themes.default === 'auto'
+      ? siteConfig.themes.include[0]
+      : siteConfig.themes.default
+    
+    cachedThemeStyles = await resolveThemeColorStyles(
+      [defaultTheme],
+      siteConfig.themes.overrides,
+    )
+  }
+
+  // ✅ Defer avatar loading - make it optional
+  if (!cachedAvatarBase64) {
+    const avatarPath = path.resolve(siteConfig.socialCardAvatarImage)
+    if (fs.existsSync(avatarPath) && 
+        (path.extname(avatarPath).toLowerCase() === '.jpg' ||
+         path.extname(avatarPath).toLowerCase() === '.jpeg')) {
+      const avatarData = fs.readFileSync(avatarPath)
+      cachedAvatarBase64 = `data:image/jpeg;base64,${avatarData.toString('base64')}`
+    }
+  }
+}
+
+const ogOptions: SatoriOptions = {
+  fonts: [
+    {
+      data: cachedFontData!, // Will be populated by initializeCache
+      name: 'JetBrains Mono',
+      style: 'normal',
+      weight: 400,
+    },
+  ],
+  height: 630,
+  width: 1200,
+}
+
+const markup = (title: string, pubDate: string | undefined, author: string) =>
+  html(`<div tw="flex flex-col max-w-full justify-center h-full bg-[${cachedThemeStyles[Object.keys(cachedThemeStyles)[0]].background}] text-[${cachedThemeStyles[Object.keys(cachedThemeStyles)[0]].foreground}] p-12">
+    <div style="border-width: 12px; border-radius: 80px;" tw="flex items-center max-w-full p-8 border-[${cachedThemeStyles[Object.keys(cachedThemeStyles)[0]].accent}]/30">
+      ${
+        cachedAvatarBase64
+          ? `<div tw="flex flex-col justify-center items-center w-1/3 h-100">
+            <img src="${cachedAvatarBase64}" tw="flex w-full rounded-full border-[${cachedThemeStyles[Object.keys(cachedThemeStyles)[0]].accent}]/30" />
+        </div>`
+          : ''
+      }
+      <div tw="flex flex-1 flex-col max-w-full justify-center items-center">
+        ${pubDate ? `<p tw="text-3xl max-w-full text-[${cachedThemeStyles[Object.keys(cachedThemeStyles)[0]].accent}]">${pubDate}</p>` : ''}
+        <h1 tw="text-6xl my-14 text-center leading-snug">${title}</h1>
+        ${author !== title ? `<p tw="text-4xl text-[${cachedThemeStyles[Object.keys(cachedThemeStyles)[0]].accent}]">${author}</p>` : ''}
+      </div>
+    </div>
+  </div>`)
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>
+
+export async function GET(context: APIContext) {
+  // ✅ Initialize cache on first call
+  await initializeCache()
+  
   const { pubDate, title, author } = context.props as Props
   const svg = await satori(markup(title, pubDate, author) as ReactNode, ogOptions)
   const png = new Resvg(svg).render().asPng()
