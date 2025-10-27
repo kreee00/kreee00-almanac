@@ -119,47 +119,46 @@ import path from 'path'
 import fs from 'fs'
 import type { ReactNode } from 'react'
 
-// ✅ CACHE HEAVY OPERATIONS - Load once per build
-let cachedFontData: Buffer | null = null
-let cachedAvatarBase64: string | undefined
-let cachedThemeStyles: any = null
+// SIMPLE SOLUTION: Keep everything synchronous but optimize what we can
+const fontPath = path.resolve(
+  './node_modules/@expo-google-fonts/jetbrains-mono/400Regular/JetBrainsMono_400Regular.ttf',
+)
+const fontData = fs.readFileSync(fontPath)
 
-// ✅ Pre-load expensive resources
-async function initializeCache() {
-  if (!cachedFontData) {
-    const fontPath = path.resolve(
-      './node_modules/@expo-google-fonts/jetbrains-mono/400Regular/JetBrainsMono_400Regular.ttf',
-    )
-    cachedFontData = fs.readFileSync(fontPath)
-  }
+// Pre-load avatar once
+const avatarPath = path.resolve(siteConfig.socialCardAvatarImage)
+let avatarBase64: string | undefined
+if (
+  fs.existsSync(avatarPath) &&
+  (path.extname(avatarPath).toLowerCase() === '.jpg' ||
+    path.extname(avatarPath).toLowerCase() === '.jpeg')
+) {
+  const avatarData = fs.readFileSync(avatarPath)
+  avatarBase64 = `data:image/jpeg;base64,${avatarData.toString('base64')}`
+}
 
-  if (!cachedThemeStyles) {
-    const defaultTheme = siteConfig.themes.default === 'auto'
-      ? siteConfig.themes.include[0]
-      : siteConfig.themes.default
-    
-    cachedThemeStyles = await resolveThemeColorStyles(
-      [defaultTheme],
-      siteConfig.themes.overrides,
-    )
-  }
+// Pre-resolve theme once
+const defaultTheme =
+  siteConfig.themes.default === 'auto'
+    ? siteConfig.themes.include[0]
+    : siteConfig.themes.default
 
-  // ✅ Defer avatar loading - make it optional
-  if (!cachedAvatarBase64) {
-    const avatarPath = path.resolve(siteConfig.socialCardAvatarImage)
-    if (fs.existsSync(avatarPath) && 
-        (path.extname(avatarPath).toLowerCase() === '.jpg' ||
-         path.extname(avatarPath).toLowerCase() === '.jpeg')) {
-      const avatarData = fs.readFileSync(avatarPath)
-      cachedAvatarBase64 = `data:image/jpeg;base64,${avatarData.toString('base64')}`
-    }
-  }
+const themeStyles = await resolveThemeColorStyles(
+  [defaultTheme],
+  siteConfig.themes.overrides,
+)
+const bg = themeStyles[defaultTheme]?.background
+const fg = themeStyles[defaultTheme]?.foreground
+const accent = themeStyles[defaultTheme]?.accent
+
+if (!bg || !fg || !accent) {
+  throw new Error(`Theme ${defaultTheme} does not have required colors`)
 }
 
 const ogOptions: SatoriOptions = {
   fonts: [
     {
-      data: cachedFontData!, // Will be populated by initializeCache
+      data: fontData,
       name: 'JetBrains Mono',
       style: 'normal',
       weight: 400,
@@ -170,19 +169,19 @@ const ogOptions: SatoriOptions = {
 }
 
 const markup = (title: string, pubDate: string | undefined, author: string) =>
-  html(`<div tw="flex flex-col max-w-full justify-center h-full bg-[${cachedThemeStyles[Object.keys(cachedThemeStyles)[0]].background}] text-[${cachedThemeStyles[Object.keys(cachedThemeStyles)[0]].foreground}] p-12">
-    <div style="border-width: 12px; border-radius: 80px;" tw="flex items-center max-w-full p-8 border-[${cachedThemeStyles[Object.keys(cachedThemeStyles)[0]].accent}]/30">
+  html(`<div tw="flex flex-col max-w-full justify-center h-full bg-[${bg}] text-[${fg}] p-12">
+    <div style="border-width: 12px; border-radius: 80px;" tw="flex items-center max-w-full p-8 border-[${accent}]/30">
       ${
-        cachedAvatarBase64
+        avatarBase64
           ? `<div tw="flex flex-col justify-center items-center w-1/3 h-100">
-            <img src="${cachedAvatarBase64}" tw="flex w-full rounded-full border-[${cachedThemeStyles[Object.keys(cachedThemeStyles)[0]].accent}]/30" />
+            <img src="${avatarBase64}" tw="flex w-full rounded-full border-[${accent}]/30" />
         </div>`
           : ''
       }
       <div tw="flex flex-1 flex-col max-w-full justify-center items-center">
-        ${pubDate ? `<p tw="text-3xl max-w-full text-[${cachedThemeStyles[Object.keys(cachedThemeStyles)[0]].accent}]">${pubDate}</p>` : ''}
+        ${pubDate ? `<p tw="text-3xl max-w-full text-[${accent}]">${pubDate}</p>` : ''}
         <h1 tw="text-6xl my-14 text-center leading-snug">${title}</h1>
-        ${author !== title ? `<p tw="text-4xl text-[${cachedThemeStyles[Object.keys(cachedThemeStyles)[0]].accent}]">${author}</p>` : ''}
+        ${author !== title ? `<p tw="text-4xl text-[${accent}]">${author}</p>` : ''}
       </div>
     </div>
   </div>`)
@@ -190,9 +189,6 @@ const markup = (title: string, pubDate: string | undefined, author: string) =>
 type Props = InferGetStaticPropsType<typeof getStaticPaths>
 
 export async function GET(context: APIContext) {
-  // ✅ Initialize cache on first call
-  await initializeCache()
-  
   const { pubDate, title, author } = context.props as Props
   const svg = await satori(markup(title, pubDate, author) as ReactNode, ogOptions)
   const png = new Resvg(svg).render().asPng()
@@ -205,8 +201,13 @@ export async function GET(context: APIContext) {
 }
 
 export async function getStaticPaths() {
+  // ⚡ OPTIMIZATION: Only generate social cards for recent posts
   const posts = await getSortedPosts()
-  return posts
+  
+  // Limit to most recent 10 posts + default to reduce build time
+  const recentPosts = posts.slice(0, 10)
+  
+  return recentPosts
     .map((post) => ({
       params: { slug: post.id },
       props: {
