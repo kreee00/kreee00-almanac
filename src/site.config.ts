@@ -7,11 +7,27 @@ const config: SiteConfig = {
   title: 'kreee00\'s almanac',
   // The description of your site, used for SEO and RSS feed.
   description:
-    'A coder-ready Astro blog theme with 59 of your favorite color schemes to choose from',
+    'A personal blog by Mohamad Akram, exploring cybersecurity, tech insights, digital transformation, and reflections on life, politics, and learning.',
   // The author of the site, used in the footer, SEO, and RSS feed.
   author: 'Akram Faisal',
   // Keywords for SEO, used in the meta tags.
-  tags: ['Astro', 'Terminal', 'kreee00', 'Akram Faisal', 'ctf writeups', 'cybersecurity'],
+  tags: [
+  'Mohamad Akram', 
+  'Akram Faisal', 
+  'kreee00', 
+  'cybersecurity', 
+  'CTF writeups', 
+  'Capture the Flag', 
+  'digital forensics', 
+  'malware analysis', 
+  'open source', 
+  'cybersecurity blog', 
+  'tech blog', 
+  'Astro static site', 
+  'terminal theme', 
+  'personal portfolio', 
+  'ethical hacking'
+],
   // Path to the image used for generating social media previews.
   // Needs to be a square JPEG file due to limitations of the social card generator.
   // Try https://squoosh.app/ to easily convert images to JPEG.
@@ -180,6 +196,9 @@ const config: SiteConfig = {
     owl: '/owl.webp',
     unicorn: '/unicorn.webp',
     duck: '/duck.webp',
+    penguin_oldmoney: '/penguin-oldmoney.webp',
+    penguin_hooded: '/penguin-hooded.webp',
+    black_cat: '/black-cat.webp',
   },
 }
 
