@@ -30,7 +30,7 @@ sudo systemctl restart polkitd
 
 The memory usage dropped. The red bars in htop turned green. I thought the job was done.
 
-![polkitd-htop](polkitd-htop.png)
+![polkitd-htop](./polkitd-htop.png)
 
 But a few days later, the creep started again. It wasn't a sudden spike; it was a slow, consistent memory leak. The daemon was hoarding memory and refusing to let it go, eventually threatening to crash the entire node.
 
@@ -40,7 +40,7 @@ As a Computer Science student and DevOps enthusiast, I knew that constantly rest
 
 I dove into the internet. I scoured forums, StackOverflow, and eventually landed on the official polkit source repository.
 
-![github-discussion](github-discussion.png)
+![github-discussion](./github-discussion.png)
 
 I wasn't alone. I found threads of other sysadmins complaining about the exact same behavior. When I asked in the community if there was a patch available, the answer was disheartening: "Up until now, there is still no fix."
 
