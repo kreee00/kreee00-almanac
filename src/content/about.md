@@ -1,7 +1,8 @@
 ---
-layout: '~/layouts/MarkdownLayout.astro'
 title: About Me
 ---
+
+**Cybersecurity enthusiast and Computer Science student with hands-on experience in DevOps, threat monitoring, and digital transformation. Proven track record in leadership and technical problem-solving, specializing in building secure, efficient, and scalable infrastructure.**
 
 I’m a Computer Science student at Universiti Teknologi PETRONAS (UTP) driven by a passion for cybersecurity, digital transformation, and open-source technologies. I enjoy exploring real-world tech challenges in automation, reliability, and threat detection.
 

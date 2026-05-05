@@ -1,0 +1,267 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import { getCollection, render } from 'astro:content'
+import { Image } from 'astro:assets'
+import BlockHeader from '~/components/BlockHeader.astro'
+
+// Get About Bio
+const aboutEntries = await getCollection('about')
+const aboutEntry = aboutEntries[0]
+const { Content: AboutContent } = aboutEntry ? await render(aboutEntry) : { Content: null }
+
+// Get Summary
+const summaryEntries = await getCollection('summary')
+const summaryEntry = summaryEntries[0]
+const { Content: SummaryContent } = summaryEntry ? await render(summaryEntry) : { Content: null }
+
+// Get Education
+const education = await getCollection('education')
+const sortedEducation = education.sort((a, b) => a.data.order - b.data.order)
+
+// Get Experience
+const experience = await getCollection('experience')
+const sortedExperience = experience.sort((a, b) => a.data.order - b.data.order)
+
+// Get Certifications
+const certifications = (await getCollection('certifications')).sort((a, b) => b.data.issueDate.getTime() - a.data.issueDate.getTime())
+const categories = [...new Set(certifications.map(c => c.data.category))].sort()
+
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+}
+---
+
+<Layout title="About Me">
+  <div class="max-w-full py-8">
+    <!-- Bio Section -->
+    <section class="mb-24">
+      <h1 class="text-[32px] font-bold tracking-tight text-foreground mb-12">
+        About Me
+      </h1>
+      <div class="prose max-w-none">
+        {AboutContent && <AboutContent />}
+      </div>
+    </section>
+
+    <!-- Summary Section -->
+    <section class="mb-32">
+      <BlockHeader>Summary</BlockHeader>
+      <div class="mt-12 prose max-w-none text-foreground/80 leading-relaxed">
+        {SummaryContent && <SummaryContent />}
+      </div>
+    </section>
+
+    <!-- Education Section -->
+    <section class="mb-32">
+      <BlockHeader>Education</BlockHeader>
+      <div class="relative mt-16 pl-12 sm:pl-16">
+        <div class="absolute left-6 sm:left-8 top-0 bottom-0 w-px bg-separator/20 transition-colors duration-300"></div>
+        <div class="flex flex-col gap-20">
+          {sortedEducation.map(async (entry) => {
+            const { Content } = await render(entry)
+            return (
+              <div class="group relative">
+                <div class="absolute -left-[30px] sm:-left-[38px] top-2 size-3 rounded-full bg-separator/30 border-2 border-background z-10 group-hover:bg-accent transition-all duration-300"></div>
+                <div class="transition-all duration-300">
+                  <div class="flex flex-col sm:flex-row sm:items-start gap-8 mb-6">
+                    {entry.data.logo ? (
+                      typeof entry.data.logo === 'string' ? (
+                        <img src={entry.data.logo} alt={entry.data.institution} class="size-12 rounded-lg opacity-80 group-hover:opacity-100 transition-opacity grayscale hover:grayscale-0 duration-300 object-contain" />
+                      ) : (
+                        <Image src={entry.data.logo} alt={entry.data.institution} class="size-12 rounded-lg opacity-80 group-hover:opacity-100 transition-opacity grayscale hover:grayscale-0 duration-300 object-contain" />
+                      )
+                    ) : (
+                      <div class="size-12 rounded-lg bg-foreground/[0.03] flex items-center justify-center text-foreground/30 font-medium text-lg border border-separator/10 shrink-0">
+                        {entry.data.institution.charAt(0)}
+                      </div>
+                    )}
+                    <div class="flex-1">
+                      <h3 class="text-[20px] font-bold text-foreground leading-snug">{entry.data.degree}</h3>
+                      <p class="text-foreground/60 font-medium mt-1">{entry.data.institution}</p>
+                      <div class="mt-4 text-[13px] font-bold tracking-wide text-foreground/20 uppercase">
+                        {formatDate(entry.data.startDate)} — {entry.data.endDate ? formatDate(entry.data.endDate) : 'Present'}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="prose prose-sm max-w-none text-foreground/70 group-hover:text-foreground/90 transition-colors">
+                    <Content />
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="mb-32">
+      <BlockHeader>Experience</BlockHeader>
+      <div class="relative mt-16 pl-12 sm:pl-16">
+        <div class="absolute left-6 sm:left-8 top-0 bottom-0 w-px bg-separator/20 transition-colors duration-300"></div>
+        <div class="flex flex-col gap-20">
+          {sortedExperience.map(async (entry) => {
+            const { Content } = await render(entry)
+            const isCurrent = !entry.data.endDate;
+            return (
+              <div class="group relative">
+                <div class={`absolute -left-[30px] sm:-left-[38px] top-2 size-3 rounded-full border-2 border-background z-10 transition-all duration-300 ${isCurrent ? 'bg-accent' : 'bg-separator/30 group-hover:bg-accent'}`}></div>
+                <div class="transition-all duration-300">
+                  <div class="flex flex-col sm:flex-row sm:items-start gap-8 mb-6">
+                    {entry.data.logo ? (
+                      typeof entry.data.logo === 'string' ? (
+                        <img src={entry.data.logo} alt={entry.data.company} class="size-12 rounded-lg opacity-80 group-hover:opacity-100 transition-opacity grayscale hover:grayscale-0 duration-300 object-contain" />
+                      ) : (
+                        <Image src={entry.data.logo} alt={entry.data.company} class="size-12 rounded-lg opacity-80 group-hover:opacity-100 transition-opacity grayscale hover:grayscale-0 duration-300 object-contain" />
+                      )
+                    ) : (
+                      <div class="size-12 rounded-lg bg-foreground/[0.03] flex items-center justify-center text-foreground/30 font-medium text-lg border border-separator/10 shrink-0">
+                        {entry.data.company.charAt(0)}
+                      </div>
+                    )}
+                    <div class="flex-1">
+                      <h3 class="text-[20px] font-bold text-foreground leading-snug">{entry.data.title}</h3>
+                      <p class="text-foreground/60 font-medium mt-1">{entry.data.company}</p>
+                      <div class="mt-4 text-[13px] font-bold tracking-wide text-foreground/20 uppercase">
+                        {formatDate(entry.data.startDate)} — {entry.data.endDate ? formatDate(entry.data.endDate) : 'Present'}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="prose prose-sm max-w-none text-foreground/70 group-hover:text-foreground/90 transition-colors">
+                    <Content />
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+
+    <!-- Certifications Section -->
+    <section class="mb-32">
+      <BlockHeader>Certifications</BlockHeader>
+      <div class="flex flex-wrap gap-2 my-12">
+        <button class="cert-filter-btn active px-4 py-1.5 rounded-lg text-[13px] font-bold transition-all uppercase tracking-wider" data-category="all">
+          All
+        </button>
+        {categories.map(category => (
+          <button class="cert-filter-btn px-4 py-1.5 rounded-lg text-[13px] font-bold transition-all uppercase tracking-wider" data-category={category}>
+            {category}
+          </button>
+        ))}
+      </div>
+      <div id="certs-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+      {certifications.map(cert => {
+        const isInProgress = cert.data.status === 'In Progress';
+        const CardContent = (
+          <div class="flex flex-col h-full group">
+            <div class="flex items-start gap-5 mb-4">
+              {cert.data.badge ? (
+                typeof cert.data.badge === 'string' ? (
+                  <img src={cert.data.badge} alt={cert.data.name} class="size-12 rounded-lg opacity-80 group-hover:opacity-100 transition-all grayscale group-hover:grayscale-0 object-contain" />
+                ) : (
+                  <Image src={cert.data.badge} alt={cert.data.name} class="size-12 rounded-lg opacity-80 group-hover:opacity-100 transition-all grayscale group-hover:grayscale-0 object-contain" />
+                )
+              ) : (
+                <div class="size-12 rounded-lg bg-foreground/[0.03] flex items-center justify-center text-foreground/20 shrink-0 border border-separator/10">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.75Z"/><path d="m9 12 2 2 4-4"/></svg>
+                </div>
+              )}
+              <div class="flex-1">
+                <h3 class="text-[17px] font-bold text-foreground leading-tight group-hover:text-accent transition-colors">
+                  {cert.data.name}
+                </h3>
+                <p class="text-[13px] font-medium text-foreground/40 mt-1">{cert.data.issuer}</p>
+              </div>
+            </div>
+            
+            <div class="mt-auto flex items-center justify-between pt-4 border-t border-separator/10">
+              <div class="text-[11px] font-bold uppercase tracking-widest text-foreground/20">
+                {formatDate(cert.data.issueDate)}
+              </div>
+              {isInProgress && (
+                <div class="flex items-center gap-1.5">
+                  <span class="size-1.5 rounded-full bg-accent"></span>
+                  <span class="text-[11px] font-bold text-accent uppercase tracking-wider">In Progress</span>
+                </div>
+              )}
+              {!isInProgress && cert.data.credentialUrl && (
+                <span class="text-[11px] font-bold uppercase tracking-widest text-foreground/20 group-hover:text-accent transition-colors">
+                  Verify
+                </span>
+              )}
+            </div>
+          </div>
+        )
+
+        return (
+          <div class="cert-card-wrapper h-full" data-category={cert.data.category}>
+            {cert.data.credentialUrl ? (
+              <a href={cert.data.credentialUrl} target="_blank" rel="noopener noreferrer" class="block h-full no-underline">
+                {CardContent}
+              </a>
+            ) : (
+              CardContent
+            )}
+          </div>
+        )
+      })}
+    </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  @reference "../styles/global.css";
+
+  .cert-filter-btn {
+    @apply text-foreground/30 cursor-pointer;
+  }
+  .cert-filter-btn:hover {
+    @apply text-foreground/60;
+  }
+  .cert-filter-btn.active {
+    @apply text-foreground;
+  }
+  
+  .cert-card-wrapper.filtered-out {
+    @apply hidden opacity-0 scale-95;
+  }
+</style>
+
+<script>
+  function initFilters() {
+    const filterButtons = document.querySelectorAll('.cert-filter-btn')
+    const certCards = document.querySelectorAll('.cert-card-wrapper')
+
+    if (filterButtons.length === 0) return;
+
+    filterButtons.forEach(btn => {
+      btn.onclick = () => {
+        const category = btn.getAttribute('data-category')
+        
+        // Update button states
+        filterButtons.forEach(b => b.classList.toggle('active', b === btn))
+        
+        // Update card visibility
+        certCards.forEach(card => {
+          const cardCategory = card.getAttribute('data-category')
+          const isVisible = category === 'all' || category === cardCategory
+          
+          if (isVisible) {
+            card.classList.remove('filtered-out')
+          } else {
+            card.classList.add('filtered-out')
+          }
+        });
+      };
+    })
+  }
+
+  // Initialize on first load
+  initFilters();
+
+  // Re-initialize if View Transitions are used
+  document.addEventListener('astro:page-load', initFilters);
+</script>
