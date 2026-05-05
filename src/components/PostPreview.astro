@@ -24,23 +24,38 @@ const samePage = Astro.url.pathname === `/posts/${post.id}`
 const articleLink = samePage ? `#${post.id}` : `/posts/${post.id}`
 ---
 
-<article class="w-full py-5 my-1 md:my-4 border-accent/10">
-  <h1 class="mb-3 text-2xl text-heading1 font-semibold">
-    <a href={articleLink}># {post.data.title}</a>
-  </h1>
-  <PostInfo post={post} class="mb-3 mt-4" />
-  {description && <p class="pl-0.5 my-4 text-base/7 text-foreground">{description}</p>}
-  {
-    tags && (
-      <div class="mb-6">
+<article class="w-full py-10 border-b border-separator/20 group transition-all duration-300">
+  <div class="flex flex-col gap-4">
+    <div class="flex items-center gap-3 text-[13px] font-semibold uppercase tracking-wider text-foreground/40">
+      <PostInfo post={post} />
+    </div>
+    
+    <h2 class="text-[24px] font-bold tracking-tight leading-tight">
+      <a href={articleLink} class="text-foreground group-hover:text-accent transition-colors duration-200">
+        {post.data.title}
+      </a>
+    </h2>
+    
+    {description && (
+      <p class="text-[17px] text-foreground/70 leading-relaxed max-w-2xl">
+        {description}
+      </p>
+    )}
+    
+    {tags && (
+      <div class="mt-2">
         <Tags tags={tags} />
       </div>
-    )
-  }
-  <div>
-    <a class="button flex items-center !pl-3.5" href={articleLink}>
-      {samePage ? 'Continue' : 'Read'}
-      <IconChevronsRight class="size-5 ml-2" />
-    </a>
+    )}
+    
+    <div class="mt-4">
+      <a 
+        class="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-foreground/40 group-hover:text-accent transition-all duration-200" 
+        href={articleLink}
+      >
+        <span>{samePage ? 'Continue Reading' : 'Read Article'}</span>
+        <IconChevronsRight class="size-3 transition-transform group-hover:translate-x-1" />
+      </a>
+    </div>
   </div>
 </article>

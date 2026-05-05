@@ -104,9 +104,17 @@ function kebabToTitleCase(str: string): string {
           ev.preventDefault()
           let themeId = button.getAttribute('data-theme')
           if (themeId) {
-            document.documentElement.setAttribute('data-theme', themeId)
-            localStorage.setItem('data-theme', themeId)
-            this.closeModal()
+            const applyTheme = () => {
+              document.documentElement.setAttribute('data-theme', themeId!)
+              localStorage.setItem('data-theme', themeId!)
+              this.closeModal()
+            }
+
+            if (document.startViewTransition) {
+              document.startViewTransition(applyTheme)
+            } else {
+              applyTheme()
+            }
           }
         })
       })

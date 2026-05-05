@@ -55,16 +55,25 @@ let darkTheme = siteConfig.themes.include[1]
       newTheme = lightThemeId
     }
     if (newTheme) {
-      updateIcons(newTheme)
       localStorage.setItem('data-theme', newTheme)
-      if (newTheme === 'auto') {
-        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)')
-        document.documentElement.setAttribute(
-          'data-theme',
-          prefersDarkScheme.matches ? darkThemeId || 'auto' : lightThemeId || 'auto',
-        )
+
+      const applyTheme = () => {
+        updateIcons(newTheme)
+        if (newTheme === 'auto') {
+          const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)')
+          document.documentElement.setAttribute(
+            'data-theme',
+            prefersDarkScheme.matches ? darkThemeId || 'auto' : lightThemeId || 'auto',
+          )
+        } else {
+          document.documentElement.setAttribute('data-theme', newTheme)
+        }
+      }
+
+      if (document.startViewTransition) {
+        document.startViewTransition(applyTheme)
       } else {
-        document.documentElement.setAttribute('data-theme', newTheme)
+        applyTheme()
       }
     }
   })

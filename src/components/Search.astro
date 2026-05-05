@@ -8,27 +8,29 @@ const { trailingSlashes = false } = Astro.props
 
 <site-search class="ms-auto" id="search" data-trailing-slashes={trailingSlashes}>
   <button
-    class="hover:text-accent flex cursor-pointer items-center justify-center rounded-md"
+    class="text-foreground/40 hover:text-accent flex cursor-pointer items-center justify-center rounded-lg transition-all duration-200"
     aria-keyshortcuts="Control+K Meta+K"
     data-open-modal
     disabled
   >
-    <IconSearch class="size-6 text-accent" />
+    <IconSearch class="size-5" />
     <span class="sr-only">Open Search</span>
   </button>
   <dialog
     aria-label="search"
-    class="text-foreground! bg-background max-h-5/6 min-h-48 w-7/8 sm:w-5/6 max-w-xl border-double! border-4 border-accent/30 shadow-sm backdrop:backdrop-blur-sm open:flex mx-auto mt-10 sm:mt-16 mb-auto rounded-xl"
+    class="text-foreground! bg-background/95 backdrop-blur-xl max-h-[80vh] min-h-48 w-7/8 sm:w-5/6 max-w-xl border border-separator/20 shadow-2xl open:flex mx-auto mt-20 sm:mt-32 mb-auto rounded-2xl overflow-hidden"
   >
-    <div class="dialog-frame flex grow flex-col gap-4 p-6 pt-6 max-w-full">
-      <button class="cursor-pointer fixed top-2 right-2 rounded-full" data-close-modal>
-        <IconCircleX class="size-6 text-accent/50" />
+    <div class="dialog-frame flex grow flex-col gap-4 p-8 max-w-full relative">
+      <button class="cursor-pointer absolute top-4 right-4 p-2 rounded-full hover:bg-foreground/5 text-foreground/20 hover:text-accent transition-all" data-close-modal>
+        <IconCircleX class="size-5" />
       </button>
       {
         import.meta.env.DEV ? (
-          <div class="mx-auto text-center">
-            <p>
-              Search is only available in production builds. <br />
+          <div class="mx-auto text-center py-10">
+            <p class="text-[17px] font-medium text-foreground/60">
+              Search is only available in production builds.
+            </p>
+            <p class="text-[13px] text-foreground/40 mt-2">
               Try building and previewing the site to test it out locally.
             </p>
           </div>
@@ -43,40 +45,48 @@ const { trailingSlashes = false } = Astro.props
 </site-search>
 
 <style is:global>
+  @reference "../styles/global.css";
+
   :root {
     --pagefind-ui-font: inherit;
     --pagefind-ui-primary: var(--theme-accent);
     --pagefind-ui-text: var(--theme-foreground);
-    --pagefind-ui-background: var(--theme-background);
-    --pagefind-ui-border: var(--theme-accent);
-    --pagefind-ui-border-width: 2px;
+    --pagefind-ui-background: transparent;
+    --pagefind-ui-border: var(--theme-separator);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 8px;
+  }
+
+  .pagefind-ui__search-input {
+    @apply bg-foreground/5! border-separator/20! text-[17px]! font-medium! py-3! px-4!;
+  }
+
+  .pagefind-ui__search-input:focus {
+    @apply border-accent/40! ring-2 ring-accent/10!;
   }
 
   .pagefind-ui__results-area {
-    margin: 16px 0;
+    margin: 24px 0;
   }
+  
   .pagefind-ui__result {
-    overflow-x: scroll !important;
+    @apply border-b border-separator/10! py-4!;
   }
 
-  .pagefind-ui__result-inner {
-    max-width: 100% !important;
+  .pagefind-ui__result-link {
+    @apply text-[17px]! font-bold! text-foreground! hover:text-accent! transition-colors!;
+  }
+
+  .pagefind-ui__result-excerpt {
+    @apply text-[14px]! text-foreground/60! mt-2! leading-relaxed!;
   }
 
   .pagefind-ui__result-inner mark {
-    background-color: var(--theme-accent) !important;
-    color: var(--theme-background) !important;
-    font-weight: 600 !important;
-    padding: 0 3px !important;
-    border-radius: 6px !important;
-  }
-
-  .pagefind-ui__result-nested .pagefind-ui__result-link:before {
-    content: '>' !important;
-    left: -16px !important;
-    right: unset !important;
+    background-color: transparent !important;
     color: var(--theme-accent) !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 </style>
 
@@ -109,14 +119,10 @@ const { trailingSlashes = false } = Astro.props
       if (this.#openBtn) {
         this.#openBtn.addEventListener('click', this.openModal)
         this.#openBtn.disabled = false
-      } else {
-        console.warn('Search button not found')
       }
 
       if (this.#closeBtn) {
         this.#closeBtn.addEventListener('click', this.closeModal)
-      } else {
-        console.warn('Close button not found')
       }
 
       if (this.#dialog) {
@@ -125,8 +131,6 @@ const { trailingSlashes = false } = Astro.props
           const body = document.querySelector('body')
           body?.classList.remove('overflow-hidden')
         })
-      } else {
-        console.warn('Dialog not found')
       }
 
       // only add pagefind in production
@@ -145,14 +149,11 @@ const { trailingSlashes = false } = Astro.props
             url: string
             sub_results: Array<{ url: string }>
           }) => {
-            // Ensure links in search results match the trailing slashes setting
             result.url = this.formatURL(result.url)
-
             result.sub_results = result.sub_results.map((res) => {
               res.url = this.formatURL(res.url)
               return res
             })
-
             return result
           },
         })
@@ -160,7 +161,6 @@ const { trailingSlashes = false } = Astro.props
     }
 
     connectedCallback() {
-      // window events, requires cleanup
       window.addEventListener('keydown', this.onWindowKeydown, {
         signal: this.#controller.signal,
       })
@@ -171,14 +171,9 @@ const { trailingSlashes = false } = Astro.props
     }
 
     openModal = (event?: MouseEvent) => {
-      if (!this.#dialog) {
-        console.warn('Dialog not found')
-        return
-      }
-
+      if (!this.#dialog) return
       const body = document.querySelector('body')
       body?.classList.add('overflow-hidden')
-
       this.#dialog.showModal()
       this.querySelector('input')?.focus()
       event?.stopPropagation()
@@ -192,9 +187,7 @@ const { trailingSlashes = false } = Astro.props
     }
 
     onWindowClick = (event: MouseEvent) => {
-      // check if it's a link
       const isLink = 'href' in (event.target || {})
-      // make sure the click is either a link or outside of the dialog
       if (
         isLink ||
         (document.body.contains(event.target as Node) &&
@@ -205,11 +198,7 @@ const { trailingSlashes = false } = Astro.props
     }
 
     onWindowKeydown = (e: KeyboardEvent) => {
-      if (!this.#dialog) {
-        console.warn('Dialog not found')
-        return
-      }
-      // check if it's the Control+K or ⌘+K shortcut
+      if (!this.#dialog) return
       if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'k') {
         this.#dialog.open ? this.closeModal() : this.openModal()
         e.preventDefault()

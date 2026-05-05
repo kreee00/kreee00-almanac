@@ -4,9 +4,9 @@ import IconChevronUp from '~/icons/chevron-up.svg'
 
 <button
   hidden
-  class="scroll-up size-11 fixed flex items-center justify-center bg-background z-100 bottom-3 right-3 rounded-full border-2 border-accent/20 hover:bg-accent/10 md:size-12 md:bottom-5 md:right-5 lg:size-13 lg:bottom-6 lg:right-6"
+  class="scroll-up size-12 fixed flex items-center justify-center bg-background/80 backdrop-blur-xl z-100 bottom-6 right-6 rounded-lg border border-separator/20 text-foreground/40 hover:text-accent hover:border-accent transition-all duration-300 shadow-2xl"
 >
-  <IconChevronUp class="text-accent/50 size-8 lg:size-9" />
+  <IconChevronUp class="size-6" />
 </button>
 
 <script>
@@ -25,7 +25,6 @@ import IconChevronUp from '~/icons/chevron-up.svg'
       show() {
         element.removeEventListener('transitionend', listener)
         element.removeAttribute('hidden')
-        // Force a browser re-paint
         const _reflow = element.offsetHeight
         element.classList.add(transitionClass)
       },
@@ -38,57 +37,40 @@ import IconChevronUp from '~/icons/chevron-up.svg'
 
   function init() {
     const button = document.querySelector('button.scroll-up') as HTMLButtonElement
-    const topHeading = document.querySelector('h1')
-    const topOffset = topHeading ? topHeading.offsetTop : 0
-    if (!button) {
-      console.warn('Scroll up button not found in the document.')
-      return
-    }
+    if (!button) return;
+
     button.addEventListener('click', () => {
-      window.scrollTo({ top: topOffset, behavior: 'smooth' })
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     })
-    // Use IntersectionObserver to show/hide the button
-    const prose = document.querySelector('article div.prose')
-    if (!prose) {
-      console.warn('Prose element not found in the article.')
-      return
-    }
 
     const btnControl = transitionHiddenElement(button, 'opacity', 'active')
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            btnControl.show()
-          } else {
-            btnControl.hide()
-          }
-        })
-      },
-      // Only consider the top 5% of the viewport
-      { rootMargin: `0px 0px -95% 0px` },
-    )
-    observer.observe(prose)
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 400) {
+        btnControl.show()
+      } else {
+        btnControl.hide()
+      }
+    }, { passive: true })
   }
 
-  init()
+  init();
+  document.addEventListener('astro:page-load', init);
 </script>
 
 <style>
-  /* When button appears, slide it in from the bottom */
   button.scroll-up {
-    /* also add a translate effect */
     transform: translateY(0px);
-    /* and a transition */
     opacity: 1;
     transition:
-      transform 0.3s ease-in-out,
-      opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-      background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      color 0.2s ease,
+      border-color 0.2s ease;
   }
   button.scroll-up:not(.active) {
     transform: translateY(10px);
     opacity: 0;
+    pointer-events: none;
   }
 </style>

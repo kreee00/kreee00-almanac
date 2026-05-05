@@ -15,17 +15,17 @@ interface Props {
 const { socialLinks } = Astro.props
 ---
 
-<div class="flex w-full max-w-md items-center justify-between">
+<div class="flex items-center gap-3">
   {
     socialLinks.github && (
       <a
         href={socialLinks.github}
         target="_blank"
         rel="noopener noreferrer"
-        class="social-link"
+        class="p-2.5 rounded-lg bg-foreground/[0.03] border border-separator/10 text-foreground/40 hover:text-accent hover:border-accent hover:bg-foreground/[0.05] transition-all duration-200"
       >
         <span class="sr-only">GitHub</span>
-        <IconGithub class="size-7" />
+        <IconGithub class="size-5" />
       </a>
     )
   }
@@ -35,10 +35,10 @@ const { socialLinks } = Astro.props
         href={socialLinks.mastodon}
         target="_blank"
         rel="noopener noreferrer"
-        class="social-link"
+        class="p-2.5 rounded-lg bg-foreground/[0.03] border border-separator/10 text-foreground/40 hover:text-accent hover:border-accent hover:bg-foreground/[0.05] transition-all duration-200"
       >
         <span class="sr-only">Mastodon</span>
-        <IconMastodon class="size-7" />
+        <IconMastodon class="size-5" />
       </a>
     )
   }
@@ -48,10 +48,10 @@ const { socialLinks } = Astro.props
         href={socialLinks.twitter}
         target="_blank"
         rel="noopener noreferrer"
-        class="social-link"
+        class="p-2.5 rounded-lg bg-foreground/[0.03] border border-separator/10 text-foreground/40 hover:text-accent hover:border-accent hover:bg-foreground/[0.05] transition-all duration-200"
       >
         <span class="sr-only">Twitter</span>
-        <IconTwitter class="size-7" />
+        <IconTwitter class="size-5" />
       </a>
     )
   }
@@ -61,10 +61,10 @@ const { socialLinks } = Astro.props
         href={socialLinks.linkedin}
         target="_blank"
         rel="noopener noreferrer"
-        class="social-link"
+        class="p-2.5 rounded-lg bg-foreground/[0.03] border border-separator/10 text-foreground/40 hover:text-accent hover:border-accent hover:bg-foreground/[0.05] transition-all duration-200"
       >
         <span class="sr-only">LinkedIn</span>
-        <IconLinkedin class="size-7" />
+        <IconLinkedin class="size-5" />
       </a>
     )
   }
@@ -74,31 +74,34 @@ const { socialLinks } = Astro.props
         href={socialLinks.bluesky}
         target="_blank"
         rel="noopener noreferrer"
-        class="social-link"
+        class="p-2.5 rounded-lg bg-foreground/[0.03] border border-separator/10 text-foreground/40 hover:text-accent hover:border-accent hover:bg-foreground/[0.05] transition-all duration-200"
       >
         <span class="sr-only">Bluesky</span>
-        <IconBluesky class="size-7" />
+        <IconBluesky class="size-5" />
       </a>
     )
   }
   {
     socialLinks.email && (
       <a
-        href={`mailto:${socialLinks.email}`}
+        href={socialLinks.email}
         target="_blank"
         rel="noopener noreferrer"
-        class="social-link"
+        class="p-2.5 rounded-lg bg-foreground/[0.03] border border-separator/10 text-foreground/40 hover:text-accent hover:border-accent hover:bg-foreground/[0.05] transition-all duration-200"
       >
         <span class="sr-only">Email</span>
-        <IconEmail class="size-7" />
+        <IconEmail class="size-5" />
       </a>
     )
   }
   {
     socialLinks.rss && (
-      <a href="/rss.xml" class="social-link">
+      <a 
+        href="/rss.xml" 
+        class="p-2.5 rounded-lg bg-foreground/[0.03] border border-separator/10 text-foreground/40 hover:text-accent hover:border-accent hover:bg-foreground/[0.05] transition-all duration-200"
+      >
         <span class="sr-only">RSS</span>
-        <IconRss class="size-7" />
+        <IconRss class="size-5" />
       </a>
     )
   }

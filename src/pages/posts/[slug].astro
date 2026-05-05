@@ -72,80 +72,99 @@ if (postData.tags && postData.tags.length > 0) {
   author={postData.author}
   tags={postData.tags}
 >
-  <article class="max-w-full py-7.5" data-pagefind-body>
+  <article class="max-w-full py-12" data-pagefind-body>
     {
       postData.coverImage && (
         <Image
           priority
-          layout="constrained"
           src={postData.coverImage.src}
           alt={postData.coverImage.alt}
-          class="w-full rounded-xl mb-5"
+          class="w-full rounded-2xl mb-12 border border-separator/10"
         />
       )
     }
-    <div class="md:mx-2">
-      <h1 id={post.id} class="mb-4 text-[1.75rem] text-heading1 font-semibold">
-        # {postData.title}
-      </h1>
-      <div class="my-2 border-l-2 border-accent/80 pl-4 py-2">
-        <PostInfo post={post} class="mb-1" />
-        {
-          tags && (
-            <div class="mt-4">
-              <Tags tags={tags} />
-            </div>
-          )
-        }
+    <div class="mb-16">
+      <div class="flex items-center gap-3 text-[13px] font-semibold uppercase tracking-wider text-foreground/40 mb-6">
+        <PostInfo post={post} />
       </div>
+      
+      <h1 id={post.id} class="text-[32px] sm:text-[40px] text-foreground font-bold tracking-tight leading-tight mb-8">
+        {postData.title}
+      </h1>
+      
+      {
+        tags && (
+          <div class="flex flex-wrap gap-2">
+            <Tags tags={tags} />
+          </div>
+        )
+      }
     </div>
-    <!-- <hr class="border-accent/10 border-2 rounded-xl hidden lg:block" /> -->
-    <div class="flex flex-col xl:gap-1 2xl:gap-18 xl:flex-row xl:items-start">
-      {postData.toc && headings.length > 0 && <TableOfContents headings={headings} />}
-      <div class="mb-5 xl:min-w-full 2xl:min-w-full prose">
+
+    <div class="flex flex-col xl:gap-20 xl:flex-row xl:items-start">
+      {postData.toc && headings.length > 0 && (
+        <div class="xl:sticky xl:top-32 xl:w-64 shrink-0 mb-12 xl:mb-0">
+          <TableOfContents headings={headings} />
+        </div>
+      )}
+      <div class="prose max-w-none flex-1">
         <PostContent />
       </div>
     </div>
   </article>
+
   {
     nextPostInSeries && (
       <a
         href={`/posts/${nextPostInSeries.id}`}
-        class="button justify-center -mt-8 mb-8 !whitespace-normal text-center flex gap-2 sm:gap-3 items-center"
+        class="inline-flex items-center justify-center w-full p-8 rounded-2xl bg-foreground/[0.03] border border-separator/10 hover:border-accent group transition-all duration-300 mb-16 no-underline"
       >
-        <span>Next: {nextPostInSeries.data.title}</span>
-        <ChevronsRight class="size-5 hidden sm:block" />
+        <div class="flex flex-col items-center gap-2">
+          <span class="text-[11px] font-bold uppercase tracking-[0.2em] text-foreground/30 group-hover:text-accent">Next in Series</span>
+          <span class="text-[20px] font-bold text-foreground text-center">{nextPostInSeries.data.title}</span>
+        </div>
       </a>
     )
   }
+
   {
     AddendumContent && (
-      <PostAddendum avatarImage={addendumAvatarImage}>
-        <AddendumContent />
-      </PostAddendum>
+      <div class="mt-20">
+        <PostAddendum avatarImage={addendumAvatarImage}>
+          <AddendumContent />
+        </PostAddendum>
+      </div>
     )
   }
+
   {
     showSeries && series ? (
-      <section>
+      <section class="mt-32">
         <DividerText text={`${series.title} Series`} />
-        {series.entries.map((seriesPost) => (
-          <PostPreview post={seriesPost} />
-        ))}
+        <div class="flex flex-col">
+          {series.entries.map((seriesPost) => (
+            <PostPreview post={seriesPost} />
+          ))}
+        </div>
       </section>
     ) : prev || next ? (
-      <section>
+      <section class="mt-32">
         <DividerText text="More Posts" />
-        {prev && <PostPreview post={prev} />}
-        {next && <PostPreview post={next} />}
+        <div class="flex flex-col">
+          {prev && <PostPreview post={prev} />}
+          {next && <PostPreview post={next} />}
+        </div>
       </section>
     ) : null
   }
+
   {
     siteConfig.giscus && (
-      <section>
+      <section class="mt-32">
         <DividerText text="Comments" />
-        <GiscusLoader />
+        <div class="mt-12">
+          <GiscusLoader />
+        </div>
       </section>
     )
   }

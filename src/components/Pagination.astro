@@ -12,15 +12,15 @@ interface Props {
 const { prevLink, prevText, nextLink, nextText } = Astro.props
 ---
 
-<div class="my-5 flex flex-row flex-wrap gap-3 justify-center">
+<div class="my-16 flex flex-row flex-wrap gap-6 justify-center">
   {
     prevLink && (
       <a
         href={prevLink}
         aria-label="Previous Page"
-        class="button flex-row items-center justify-center w-full !pr-3.5 sm:w-min"
+        class="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-foreground/40 hover:text-accent transition-all duration-200"
       >
-        <IconChevronsLeft class="mr-2 text-xl size-5" />
+        <IconChevronsLeft class="size-4" />
         {prevText || 'Previous'}
       </a>
     )
@@ -31,12 +31,12 @@ const { prevLink, prevText, nextLink, nextText } = Astro.props
         href={nextLink}
         aria-label="Next Page"
         class:list={[
-          'button flex-row items-center justify-center w-full !pl-3.5 sm:w-min',
+          'inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-foreground/40 hover:text-accent transition-all duration-200',
           prevLink && 'ml-auto',
         ]}
       >
         {nextText || 'Next'}
-        <IconChevronsRight class="ml-2 text-xl size-5" />
+        <IconChevronsRight class="size-4" />
       </a>
     )
   }
