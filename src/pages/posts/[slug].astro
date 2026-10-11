@@ -14,7 +14,6 @@ import Tags from '~/components/Tags.astro'
 import PostInfo from '~/components/PostInfo.astro'
 import ScrollUpButton from '~/components/ScrollUpButton.astro'
 import type { Collation } from '~/types'
-import ChevronsRight from '~/icons/chevrons-right.svg'
 import { getPostSequenceContext } from '~/utils'
 
 export const getStaticPaths = (async () => {
@@ -72,44 +71,30 @@ if (postData.tags && postData.tags.length > 0) {
   author={postData.author}
   tags={postData.tags}
 >
-  <article class="max-w-full py-12" data-pagefind-body>
+  <article class="max-w-full pt-8 pb-4" data-pagefind-body>
     {
       postData.coverImage && (
         <Image
           priority
           src={postData.coverImage.src}
           alt={postData.coverImage.alt}
-          class="w-full rounded-2xl mb-12 border border-separator/10"
+          class="w-full rounded-xl mb-10 border border-separator/40"
         />
       )
     }
-    <div class="mb-16">
-      <div class="flex items-center gap-3 text-[13px] font-semibold uppercase tracking-wider text-foreground/40 mb-6">
-        <PostInfo post={post} />
-      </div>
-      
-      <h1 id={post.id} class="text-[32px] sm:text-[40px] text-foreground font-bold tracking-tight leading-tight mb-8">
+    <div class="mb-10">
+      <PostInfo post={post} class="mb-4" />
+
+      <h1 id={post.id} class="text-[30px] sm:text-[38px] text-foreground font-bold tracking-tight leading-[1.15] mb-5">
         {postData.title}
       </h1>
-      
-      {
-        tags && (
-          <div class="flex flex-wrap gap-2">
-            <Tags tags={tags} />
-          </div>
-        )
-      }
+
+      {tags && <Tags tags={tags} />}
     </div>
 
-    <div class="flex flex-col xl:gap-20 xl:flex-row xl:items-start">
-      {postData.toc && headings.length > 0 && (
-        <div class="xl:sticky xl:top-32 xl:w-64 shrink-0 mb-12 xl:mb-0">
-          <TableOfContents headings={headings} />
-        </div>
-      )}
-      <div class="prose max-w-none flex-1">
-        <PostContent />
-      </div>
+    {postData.toc && headings.length > 0 && <TableOfContents headings={headings} />}
+    <div class="prose max-w-none">
+      <PostContent />
     </div>
   </article>
 
@@ -117,19 +102,17 @@ if (postData.tags && postData.tags.length > 0) {
     nextPostInSeries && (
       <a
         href={`/posts/${nextPostInSeries.id}`}
-        class="inline-flex items-center justify-center w-full p-8 rounded-2xl bg-foreground/[0.03] border border-separator/10 hover:border-accent group transition-all duration-300 mb-16 no-underline"
+        class="flex flex-col gap-1 w-full p-6 rounded-xl border border-separator/60 hover:border-foreground/30 mb-12"
       >
-        <div class="flex flex-col items-center gap-2">
-          <span class="text-[11px] font-bold uppercase tracking-[0.2em] text-foreground/30 group-hover:text-accent">Next in Series</span>
-          <span class="text-[20px] font-bold text-foreground text-center">{nextPostInSeries.data.title}</span>
-        </div>
+        <span class="text-[14px] text-foreground/50">Next in series →</span>
+        <span class="text-[18px] font-semibold text-foreground">{nextPostInSeries.data.title}</span>
       </a>
     )
   }
 
   {
     AddendumContent && (
-      <div class="mt-20">
+      <div class="mt-12">
         <PostAddendum avatarImage={addendumAvatarImage}>
           <AddendumContent />
         </PostAddendum>
@@ -139,8 +122,8 @@ if (postData.tags && postData.tags.length > 0) {
 
   {
     showSeries && series ? (
-      <section class="mt-32">
-        <DividerText text={`${series.title} Series`} />
+      <section class="mt-16">
+        <DividerText text={`More in ${series.title}`} />
         <div class="flex flex-col">
           {series.entries.map((seriesPost) => (
             <PostPreview post={seriesPost} />
@@ -148,8 +131,8 @@ if (postData.tags && postData.tags.length > 0) {
         </div>
       </section>
     ) : prev || next ? (
-      <section class="mt-32">
-        <DividerText text="More Posts" />
+      <section class="mt-16">
+        <DividerText text="More posts" />
         <div class="flex flex-col">
           {prev && <PostPreview post={prev} />}
           {next && <PostPreview post={next} />}
@@ -160,9 +143,9 @@ if (postData.tags && postData.tags.length > 0) {
 
   {
     siteConfig.giscus && (
-      <section class="mt-32">
+      <section class="mt-16">
         <DividerText text="Comments" />
-        <div class="mt-12">
+        <div class="mt-6">
           <GiscusLoader />
         </div>
       </section>
