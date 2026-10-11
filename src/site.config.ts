@@ -10,27 +10,25 @@ const config: SiteConfig = {
     'A personal blog by Mohamad Akram, exploring cybersecurity, tech insights, digital transformation, and reflections on life, politics, and learning.',
   // The author of the site, used in the footer, SEO, and RSS feed.
   author: 'Akram Faisal',
+  // The author's personal/portfolio website. Linked from the nav and home banner.
+  portfolio: 'https://akramfaisal.org',
   // Keywords for SEO, used in the meta tags.
   tags: [
-  'Mohamad Akram', 
-  'Akram Faisal', 
-  'kreee00', 
-  'cybersecurity', 
-  'CTF writeups', 
-  'Capture the Flag', 
-  'digital forensics', 
-  'malware analysis', 
-  'open source', 
-  'cybersecurity blog', 
-  'tech blog', 
-  'Astro static site', 
-  'terminal theme', 
-  'personal portfolio', 
-  'ethical hacking'
-],
+    'Mohamad Akram',
+    'Akram Faisal',
+    'kreee00',
+    'cybersecurity',
+    'CTF writeups',
+    'Capture the Flag',
+    'digital forensics',
+    'malware analysis',
+    'open source',
+    'cybersecurity blog',
+    'tech blog',
+    'ethical hacking',
+  ],
   // Path to the image used for generating social media previews.
-  // Needs to be a square JPEG file due to limitations of the social card generator.
-  // Try https://squoosh.app/ to easily convert images to JPEG.
+  // Any square image works; it is resized and converted at build time.
   socialCardAvatarImage: './src/content/avatar.jpg',
   // Font imported from @fontsource or elsewhere, used for the entire site.
   // To change this see src/styles/global.css and import a different font.
@@ -49,12 +47,13 @@ const config: SiteConfig = {
       url: '/',
     },
     {
-      name: 'About',
-      url: '/about',
-    },
-    {
       name: 'Archive',
       url: '/posts',
+    },
+    {
+      name: 'About',
+      url: 'https://akramfaisal.org',
+      external: true,
     },
   ],
   // The theming configuration for the site.
