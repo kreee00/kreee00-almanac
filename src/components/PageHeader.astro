@@ -8,22 +8,27 @@ const { title, titlePieces } = Astro.props
 
 const splitPath: string[] = Astro.url.pathname
   .split('/')
-  .filter(Boolean) // Remove empty parts
-  .map((part) => decodeURIComponent(part)) // For Unicode chars kept by github-slugger
+  .filter(Boolean)
+  .map((part) => decodeURIComponent(part))
 
 const pieces = titlePieces ?? splitPath
 
 if (pieces.length === 0) {
   pieces.push('home')
 }
-
-const titleFromPieces = pieces.map((part) => `/ ${part}`)
 ---
 
-<div
-  class="border-0 border-accent/30 bg-accent/6 rounded-xl inline-block py-2.5 pl-3 pr-4 mt-5 md:mt-8"
->
-  <h1 class="text-accent text-2xl font-semibold flex flex-wrap gap-y-2 gap-x-3.5">
-    {title ? <span>// {title}</span> : titleFromPieces.map((part) => <span>{part}</span>)}
-  </h1>
-</div>
+<h1 class="pt-8 pb-2 text-[28px] sm:text-[32px] font-bold tracking-tight text-foreground flex flex-wrap gap-x-2">
+  {
+    title ? (
+      title
+    ) : (
+      pieces.map((part, i) => (
+        <span class={i < pieces.length - 1 ? 'text-foreground/40 font-medium' : ''}>
+          <span class="text-accent font-mono font-normal">/</span>
+          {part}
+        </span>
+      ))
+    )
+  }
+</h1>

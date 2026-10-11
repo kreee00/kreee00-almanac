@@ -6,9 +6,9 @@ import IconSearch from '~/icons/search.svg'
 const { trailingSlashes = false } = Astro.props
 ---
 
-<site-search class="ms-auto" id="search" data-trailing-slashes={trailingSlashes}>
+<site-search class="flex" id="search" data-trailing-slashes={trailingSlashes}>
   <button
-    class="text-foreground/40 hover:text-accent flex cursor-pointer items-center justify-center rounded-lg transition-all duration-200"
+    class="icon-button"
     aria-keyshortcuts="Control+K Meta+K"
     data-open-modal
     disabled
@@ -18,12 +18,15 @@ const { trailingSlashes = false } = Astro.props
   </button>
   <dialog
     aria-label="search"
-    class="text-foreground! bg-background/95 backdrop-blur-xl max-h-[80vh] min-h-48 w-7/8 sm:w-5/6 max-w-xl border border-separator/20 shadow-2xl open:flex mx-auto mt-20 sm:mt-32 mb-auto rounded-2xl overflow-hidden"
+    class="text-foreground! bg-background max-h-[80vh] min-h-48 w-[calc(100%-2rem)] max-w-xl border border-separator/60 shadow-xl open:flex mx-auto mt-16 sm:mt-28 mb-auto rounded-2xl overflow-hidden backdrop:bg-black/30 backdrop:backdrop-blur-sm"
   >
-    <div class="dialog-frame flex grow flex-col gap-4 p-8 max-w-full relative">
-      <button class="cursor-pointer absolute top-4 right-4 p-2 rounded-full hover:bg-foreground/5 text-foreground/20 hover:text-accent transition-all" data-close-modal>
-        <IconCircleX class="size-5" />
-      </button>
+    <div class="dialog-frame flex grow flex-col gap-3 p-5 sm:p-6 max-w-full overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <span class="text-[15px] font-medium text-foreground/60">Search posts</span>
+        <button class="icon-button -mr-2" data-close-modal aria-label="Close search">
+          <IconCircleX class="size-5" />
+        </button>
+      </div>
       {
         import.meta.env.DEV ? (
           <div class="mx-auto text-center py-10">
@@ -49,44 +52,54 @@ const { trailingSlashes = false } = Astro.props
 
   :root {
     --pagefind-ui-font: inherit;
-    --pagefind-ui-primary: var(--theme-accent);
+    --pagefind-ui-primary: var(--theme-foreground);
     --pagefind-ui-text: var(--theme-foreground);
     --pagefind-ui-background: transparent;
     --pagefind-ui-border: var(--theme-separator);
     --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 8px;
+    --pagefind-ui-border-radius: 10px;
+    --pagefind-ui-scale: 0.85;
   }
 
   .pagefind-ui__search-input {
-    @apply bg-foreground/5! border-separator/20! text-[17px]! font-medium! py-3! px-4!;
+    @apply bg-foreground/[0.03]! text-[16px]! font-normal!;
   }
 
-  .pagefind-ui__search-input:focus {
-    @apply border-accent/40! ring-2 ring-accent/10!;
+  .pagefind-ui__search-input:focus,
+  .pagefind-ui__search-input:focus-visible {
+    @apply outline-none! border-foreground/30!;
+  }
+
+  .pagefind-ui__search-clear {
+    @apply text-[13px]! text-foreground/50! bg-transparent!;
   }
 
   .pagefind-ui__results-area {
-    margin: 24px 0;
+    margin: 16px 0 0;
   }
-  
+
+  .pagefind-ui__message {
+    @apply text-[14px]! font-normal! text-foreground/50!;
+  }
+
   .pagefind-ui__result {
-    @apply border-b border-separator/10! py-4!;
+    @apply border-b border-separator/40! py-4!;
   }
 
   .pagefind-ui__result-link {
-    @apply text-[17px]! font-bold! text-foreground! hover:text-accent! transition-colors!;
+    @apply text-[16px]! font-semibold! text-foreground! hover:opacity-70!;
+  }
+
+  .pagefind-ui__result-title {
+    @apply font-semibold!;
   }
 
   .pagefind-ui__result-excerpt {
-    @apply text-[14px]! text-foreground/60! mt-2! leading-relaxed!;
+    @apply text-[14px]! text-foreground/60! mt-1! leading-relaxed!;
   }
 
   .pagefind-ui__result-inner mark {
-    background-color: transparent !important;
-    color: var(--theme-accent) !important;
-    font-weight: 700 !important;
-    text-decoration: underline;
-    text-underline-offset: 2px;
+    @apply bg-accent/25! text-foreground! rounded-sm px-0.5;
   }
 </style>
 

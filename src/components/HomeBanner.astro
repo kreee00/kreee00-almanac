@@ -1,63 +1,47 @@
 ---
 import { Image } from 'astro:assets'
-import GitHubActivityCalendar from '~/components/GitHubActivityCalendar.astro'
+import siteConfig from '~/site.config'
 import type { FrontmatterImage } from '~/types'
 
 interface Props {
   avatarImage?: FrontmatterImage
-  githubCalendar?: string
 }
-const { avatarImage, githubCalendar } = Astro.props
+const { avatarImage } = Astro.props
 ---
 
-<div class="my-16 md:mx-0">
-  <div
-    class="flex flex-col md:flex-row items-center gap-12 md:gap-16 max-w-full mb-20"
-  >
+<div class="pt-10 pb-4">
+  <div class="flex flex-col sm:flex-row items-start gap-6 sm:gap-8">
     {
       avatarImage && (
-        <div class="relative shrink-0">
-          <Image
-            priority
-            src={avatarImage.src}
-            alt={avatarImage.alt}
-            class="rounded-2xl border border-separator/10 size-48 aspect-square object-cover"
-            widths={[384]}
-            height={192}
-            width={192}
-          />
-          <div class="absolute -bottom-1 -right-1 bg-accent size-5 rounded-full border-4 border-background"></div>
-        </div>
+        <Image
+          priority
+          src={avatarImage.src}
+          alt={avatarImage.alt}
+          class="rounded-full size-20 sm:size-32 aspect-square object-cover shrink-0"
+          widths={[256]}
+          height={128}
+          width={128}
+        />
       )
     }
-    <div class="text-center md:text-left">
-      <div class:list={['max-w-full prose prose-headings:mb-6']}>
+    <div>
+      <div class="prose max-w-none [&>p]:my-0! [&>p+p]:mt-4! [&>p]:text-foreground/75!">
         <slot />
       </div>
-      <div class="mt-10 flex flex-wrap justify-center md:justify-start gap-4">
-        <a 
-          href="https://drive.google.com/your-resume-link-here" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="button"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-           Download Resume
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href="/posts" class="button">
+          Read the archive
         </a>
-        <a 
-          href="mailto:akram.mfaisal81@gmail.com"
+        <a
+          href={siteConfig.portfolio}
+          target="_blank"
+          rel="noopener noreferrer"
           class="button-secondary"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-           Email Me
+          More about me
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg>
         </a>
       </div>
     </div>
   </div>
-  {githubCalendar && (
-    <div class="border-t border-separator/10 pt-12 mt-12 overflow-hidden">
-      <h3 class="text-[11px] font-bold uppercase tracking-[0.2em] text-foreground/30 mb-8">GitHub Activity</h3>
-      <GitHubActivityCalendar username={githubCalendar} />
-    </div>
-  )}
 </div>

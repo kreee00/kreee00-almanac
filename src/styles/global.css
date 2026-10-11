@@ -29,13 +29,13 @@
   --default-mono-font-family: 'SF Mono', 'JetBrains Mono', monospace;
 }
 
-header {
-  @apply sticky top-0 z-50 backdrop-blur-xl bg-background/80;
+body > div > header {
+  @apply sticky top-0 z-50 backdrop-blur-xl bg-background/85;
 }
 
-header::after {
+body > div > header::after {
   content: '';
-  @apply absolute bottom-0 left-0 right-0 h-px bg-separator/20;
+  @apply absolute bottom-0 left-0 right-0 h-px bg-separator/50;
 }
 
 /* Apple-like smooth theme transition */
@@ -96,19 +96,26 @@ a:hover {
   @apply text-accent;
 }
 
-/* Fix for invisible button text and cleaner macOS style */
 a.button, button.button-primary {
-  @apply inline-flex items-center justify-center px-6 py-2 rounded-lg font-semibold transition-all duration-200;
+  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-[15px] font-medium;
   @apply bg-foreground text-background! border border-transparent;
 }
 
 a.button:hover, button.button-primary:hover {
-  @apply bg-accent text-black! border-accent shadow-sm;
-  text-shadow: none !important;
+  @apply opacity-85;
 }
 
 a.button-secondary {
-  @apply inline-flex items-center justify-center px-6 py-2 rounded-lg font-semibold border border-separator/30 text-foreground/60 hover:text-foreground hover:border-foreground/50 transition-all duration-200;
+  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-[15px] font-medium;
+  @apply border border-separator text-foreground/80! hover:text-foreground! hover:bg-foreground/5;
+}
+
+.icon-button {
+  @apply inline-flex items-center justify-center size-9 rounded-lg text-foreground/55 hover:text-foreground hover:bg-foreground/5 cursor-pointer;
+}
+
+.pill {
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[14px] leading-5 border border-separator/60 text-foreground/70! hover:text-foreground! hover:border-foreground/30;
 }
 
 article img {
@@ -128,7 +135,7 @@ article img {
   }
 
   div.expressive-code {
-    @apply my-12 overflow-hidden;
+    @apply my-8 overflow-hidden;
     --ec-codeFontFml: var(--default-mono-font-family);
 
     figure {
@@ -146,29 +153,33 @@ article img {
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold tracking-tight text-foreground mt-16 mb-8;
-    line-height: 1.2;
-    
+    @apply font-semibold tracking-tight text-foreground mt-12 mb-4 scroll-mt-24;
+    line-height: 1.25;
+
     a {
       @apply text-inherit;
     }
   }
 
-  h1 { @apply text-[32px] mt-20; }
-  h2 { @apply text-[24px] border-b border-separator/10 pb-4; }
+  h1 { @apply text-[30px] mt-14; }
+  h2 { @apply text-[24px]; }
   h3 { @apply text-[20px]; }
   h4 { @apply text-[18px]; }
 
   p, ul, ol {
-    @apply my-8 text-foreground/90;
+    @apply my-5 text-foreground/90;
+  }
+
+  p a, li a {
+    @apply text-foreground underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground;
   }
 
   blockquote {
-    @apply border-l-2 border-accent bg-accent/5 px-8 py-4 my-12 italic;
+    @apply border-l-2 border-separator pl-5 py-1 my-8 text-foreground/70;
   }
 
   aside {
-    @apply rounded-lg py-6 px-8 my-12 border border-separator/20;
+    @apply rounded-xl py-5 px-6 my-8 border border-separator/60;
 
     &.character-dialogue {
       @apply bg-background/50 backdrop-blur-sm border border-separator/10;
@@ -181,10 +192,10 @@ article img {
 
   ul { @apply list-disc; }
   ol { @apply list-decimal; }
-  li { @apply mb-3 pl-2; }
+  li { @apply mb-2 pl-1; }
 
   hr {
-    @apply h-px my-16 bg-separator/20 border-none;
+    @apply h-px my-12 bg-separator/60 border-none;
   }
 }
 

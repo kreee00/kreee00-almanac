@@ -9,13 +9,14 @@ let darkTheme = siteConfig.themes.include[1]
 
 <button
   id="theme-change-button"
-  class="block ml-auto"
+  class="icon-button"
+  aria-label="Toggle theme"
   data-light={lightTheme}
   data-dark={darkTheme}
 >
-  <IconSun id="icon-light" class="hidden size-6 text-accent" />
-  <IconMoon id="icon-dark" class="hidden size-6 text-accent" />
-  <IconSunMoon id="icon-auto" class="hidden size-6 text-accent" />
+  <IconSun id="icon-light" class="hidden size-5" />
+  <IconMoon id="icon-dark" class="hidden size-5" />
+  <IconSunMoon id="icon-auto" class="hidden size-5" />
 </button>
 
 <script>

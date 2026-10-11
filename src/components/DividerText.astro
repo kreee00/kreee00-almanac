@@ -5,8 +5,6 @@ interface Props {
 const { text } = Astro.props
 ---
 
-<div class="flex items-center gap-6 my-16">
-  <div class="h-px bg-separator/20 flex-1"></div>
-  <span class="text-[11px] font-bold uppercase tracking-[0.2em] text-foreground/30 whitespace-nowrap">{text}</span>
-  <div class="h-px bg-separator/20 flex-1"></div>
-</div>
+<h2 class="text-[15px] font-semibold text-foreground/50 pb-3 mb-2 border-b border-separator/50">
+  {text}
+</h2>

@@ -13,96 +13,31 @@ interface Props {
 }
 
 const { socialLinks } = Astro.props
+
+const links = [
+  { href: socialLinks.github, label: 'GitHub', Icon: IconGithub, external: true },
+  { href: socialLinks.mastodon, label: 'Mastodon', Icon: IconMastodon, external: true },
+  { href: socialLinks.twitter, label: 'Twitter', Icon: IconTwitter, external: true },
+  { href: socialLinks.linkedin, label: 'LinkedIn', Icon: IconLinkedin, external: true },
+  { href: socialLinks.bluesky, label: 'Bluesky', Icon: IconBluesky, external: true },
+  { href: socialLinks.email, label: 'Email', Icon: IconEmail, external: false },
+  { href: socialLinks.rss ? '/rss.xml' : undefined, label: 'RSS', Icon: IconRss, external: false },
+].filter((link) => link.href)
 ---
 
-<div class="flex items-center gap-3">
+<div class="flex items-center gap-1 -mr-2">
   {
-    socialLinks.github && (
+    links.map(({ href, label, Icon, external }) => (
       <a
-        href={socialLinks.github}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="p-2.5 rounded-lg bg-foreground/[0.03] border border-separator/10 text-foreground/40 hover:text-accent hover:border-accent hover:bg-foreground/[0.05] transition-all duration-200"
+        href={href}
+        class="icon-button"
+        title={label}
+        target={external ? '_blank' : undefined}
+        rel={external ? 'noopener noreferrer' : undefined}
       >
-        <span class="sr-only">GitHub</span>
-        <IconGithub class="size-5" />
+        <span class="sr-only">{label}</span>
+        <Icon class="size-[18px]" />
       </a>
-    )
-  }
-  {
-    socialLinks.mastodon && (
-      <a
-        href={socialLinks.mastodon}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="p-2.5 rounded-lg bg-foreground/[0.03] border border-separator/10 text-foreground/40 hover:text-accent hover:border-accent hover:bg-foreground/[0.05] transition-all duration-200"
-      >
-        <span class="sr-only">Mastodon</span>
-        <IconMastodon class="size-5" />
-      </a>
-    )
-  }
-  {
-    socialLinks.twitter && (
-      <a
-        href={socialLinks.twitter}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="p-2.5 rounded-lg bg-foreground/[0.03] border border-separator/10 text-foreground/40 hover:text-accent hover:border-accent hover:bg-foreground/[0.05] transition-all duration-200"
-      >
-        <span class="sr-only">Twitter</span>
-        <IconTwitter class="size-5" />
-      </a>
-    )
-  }
-  {
-    socialLinks.linkedin && (
-      <a
-        href={socialLinks.linkedin}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="p-2.5 rounded-lg bg-foreground/[0.03] border border-separator/10 text-foreground/40 hover:text-accent hover:border-accent hover:bg-foreground/[0.05] transition-all duration-200"
-      >
-        <span class="sr-only">LinkedIn</span>
-        <IconLinkedin class="size-5" />
-      </a>
-    )
-  }
-  {
-    socialLinks.bluesky && (
-      <a
-        href={socialLinks.bluesky}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="p-2.5 rounded-lg bg-foreground/[0.03] border border-separator/10 text-foreground/40 hover:text-accent hover:border-accent hover:bg-foreground/[0.05] transition-all duration-200"
-      >
-        <span class="sr-only">Bluesky</span>
-        <IconBluesky class="size-5" />
-      </a>
-    )
-  }
-  {
-    socialLinks.email && (
-      <a
-        href={socialLinks.email}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="p-2.5 rounded-lg bg-foreground/[0.03] border border-separator/10 text-foreground/40 hover:text-accent hover:border-accent hover:bg-foreground/[0.05] transition-all duration-200"
-      >
-        <span class="sr-only">Email</span>
-        <IconEmail class="size-5" />
-      </a>
-    )
-  }
-  {
-    socialLinks.rss && (
-      <a 
-        href="/rss.xml" 
-        class="p-2.5 rounded-lg bg-foreground/[0.03] border border-separator/10 text-foreground/40 hover:text-accent hover:border-accent hover:bg-foreground/[0.05] transition-all duration-200"
-      >
-        <span class="sr-only">RSS</span>
-        <IconRss class="size-5" />
-      </a>
-    )
+    ))
   }
 </div>

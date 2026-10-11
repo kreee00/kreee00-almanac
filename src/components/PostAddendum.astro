@@ -8,24 +8,20 @@ interface Props {
 const { avatarImage } = Astro.props
 ---
 
-<div
-  class="flex flex-col sm:flex-row items-center justify-around sm:gap-5 max-w-full mb-6 py-10 bg-accent/8 p-4 rounded-xl"
->
+<div class="flex flex-col sm:flex-row items-center sm:items-start gap-5 p-6 rounded-xl border border-separator/60">
   {
     avatarImage && (
       <Image
         src={avatarImage.src}
         alt={avatarImage.alt}
-        class="rounded-full border-8 border-accent/15 size-36 aspect-square box-content shrink-0"
-        widths={[288]}
-        height={144}
-        width={144}
+        class="rounded-full size-16 aspect-square object-cover shrink-0"
+        widths={[128]}
+        height={64}
+        width={64}
       />
     )
   }
-  <div>
-    <div class:list={['m-4 max-w-full prose']}>
-      <slot />
-    </div>
+  <div class="prose max-w-none text-center sm:text-left [&>p]:my-0! [&>p]:text-[16px]! [&>p]:text-foreground/70!">
+    <slot />
   </div>
 </div>

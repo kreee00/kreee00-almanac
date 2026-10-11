@@ -156,10 +156,10 @@ let generatedCss: string = cssLines.join('\n')
   </head>
   <body class="w-full h-full m-0 bg-background text-foreground">
     <div
-      class="flex flex-col max-w-[980px] min-h-screen m-auto px-6 py-12 sm:px-12 sm:py-20 md:px-16 md:py-24"
+      class="flex flex-col max-w-[860px] min-h-screen m-auto px-5 pb-12 sm:px-8 sm:pt-4"
     >
       <Header />
-      <main class="flex flex-col py-8">
+      <main class="flex flex-col grow">
         <slot />
       </main>
       <Footer />

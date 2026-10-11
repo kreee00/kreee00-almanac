@@ -1,5 +1,4 @@
 ---
-import IconChevronsRight from '~/icons/chevrons-right.svg'
 import type { CollectionEntry } from 'astro:content'
 import { render } from 'astro:content'
 import Tags from '~/components/Tags.astro'
@@ -24,38 +23,26 @@ const samePage = Astro.url.pathname === `/posts/${post.id}`
 const articleLink = samePage ? `#${post.id}` : `/posts/${post.id}`
 ---
 
-<article class="w-full py-10 border-b border-separator/20 group transition-all duration-300">
-  <div class="flex flex-col gap-4">
-    <div class="flex items-center gap-3 text-[13px] font-semibold uppercase tracking-wider text-foreground/40">
-      <PostInfo post={post} />
-    </div>
-    
-    <h2 class="text-[24px] font-bold tracking-tight leading-tight">
-      <a href={articleLink} class="text-foreground group-hover:text-accent transition-colors duration-200">
+<article class="w-full py-7 border-b border-separator/50 last-of-type:border-b-0">
+  <div class="flex flex-col gap-2.5">
+    <PostInfo post={post} />
+
+    <h2 class="text-[21px] sm:text-[22px] font-semibold tracking-tight leading-snug">
+      <a href={articleLink} class="text-foreground! hover:opacity-70">
         {post.data.title}
       </a>
     </h2>
-    
+
     {description && (
-      <p class="text-[17px] text-foreground/70 leading-relaxed max-w-2xl">
+      <p class="text-[16px] text-foreground/65 leading-relaxed">
         {description}
       </p>
     )}
-    
+
     {tags && (
-      <div class="mt-2">
+      <div class="mt-1">
         <Tags tags={tags} />
       </div>
     )}
-    
-    <div class="mt-4">
-      <a 
-        class="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-foreground/40 group-hover:text-accent transition-all duration-200" 
-        href={articleLink}
-      >
-        <span>{samePage ? 'Continue Reading' : 'Read Article'}</span>
-        <IconChevronsRight class="size-3 transition-transform group-hover:translate-x-1" />
-      </a>
-    </div>
   </div>
 </article>

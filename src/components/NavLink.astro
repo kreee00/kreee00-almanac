@@ -8,21 +8,20 @@ interface Props {
 const { link } = Astro.props
 const { pathname } = Astro.url
 
-const isActive = pathname === link.url || (link.url !== '/' && pathname.startsWith(link.url))
+const isActive =
+  !link.external &&
+  (pathname === link.url || (link.url !== '/' && pathname.startsWith(link.url)))
 ---
 
 <a
-  class={`text-[13px] font-semibold tracking-wide uppercase transition-all duration-200 relative pb-1 ${
-    isActive 
-      ? 'text-accent' 
-      : 'text-foreground/40 hover:text-foreground'
-  }`}
+  class:list={[
+    'px-3 py-1.5 rounded-lg text-[15px] hover:bg-foreground/5',
+    isActive ? 'text-foreground! font-medium' : 'text-foreground/55 hover:text-foreground!',
+  ]}
+  aria-current={isActive ? 'page' : undefined}
   rel={link.external ? 'noopener noreferrer' : undefined}
   target={link.external ? '_blank' : undefined}
   href={link.url}
 >
-  {link.name}
-  {isActive && (
-    <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-accent shadow-[0_0_8px_var(--theme-accent)]"></span>
-  )}
+  {link.name}{link.external && <span class="text-foreground/40"> ↗</span>}
 </a>

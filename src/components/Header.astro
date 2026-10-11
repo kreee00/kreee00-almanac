@@ -9,29 +9,22 @@ const lightDarkAutoTheme = siteConfig.themes.mode === 'light-dark-auto'
 const selectTheme =
   siteConfig.themes.mode === 'select' && siteConfig.themes.include.length > 1
 
-// Extract initials for a subtle logo mark
-const initials = siteConfig.title
-  .split(/['\s]/)
-  .filter(Boolean)
-  .map(word => word[0])
-  .join('')
-  .toLowerCase()
 ---
 
-<header class="py-6 mb-8">
-  <div class="relative flex items-center justify-between">
+<header class="py-5 mb-6">
+  <div class="relative flex items-center justify-between gap-4">
     <a
       id="logo"
       href="/"
-      class="text-[17px] font-bold tracking-tight text-foreground hover:opacity-80 transition-all flex items-center gap-2 group"
+      class="text-[16px] font-semibold tracking-tight text-foreground! hover:opacity-70 flex items-center gap-1.5 whitespace-nowrap"
     >
-      <span class="text-accent group-hover:shadow-[0_0_12px_var(--theme-accent)] transition-all">/</span>
+      <span class="text-accent font-mono">/</span>
       {siteConfig.title}
     </a>
-    
-    <div class="flex items-center gap-8">
-      <nav aria-label="Menu" class="hidden sm:block">
-        <ul class="flex items-center gap-8">
+
+    <div class="flex items-center gap-1 sm:gap-2">
+      <nav aria-label="Menu" class="hidden sm:block mr-2">
+        <ul class="flex items-center gap-1">
           {
             siteConfig.navLinks.map((link) => (
               <li>
@@ -42,40 +35,41 @@ const initials = siteConfig.title
         </ul>
       </nav>
 
-      <div class="flex items-center gap-4 border-l border-separator/20 pl-6">
-        <Search trailingSlashes={siteConfig.trailingSlashes} />
-        {lightDarkAutoTheme && <LightDarkAutoButton />}
-        {selectTheme && <SelectTheme />}
-        
-        <nav id="nav-mobile" aria-label="Menu" class="sm:hidden relative">
-          <button
-            id="nav-mobile-button"
-            class="p-2 rounded-lg hover:bg-foreground/5 transition-colors"
-            type="button"
-            aria-expanded="false"
-            aria-controls="nav-mobile-list"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-          </button>
-          <ul
-            id="nav-mobile-list"
-            class="invisible absolute right-0 top-full mt-2 w-48 bg-background/95 backdrop-blur-xl border border-separator/20 shadow-2xl rounded-xl p-2 z-50 overflow-hidden transition-all duration-200"
-          >
-            {
-              siteConfig.navLinks.map((link) => (
-                <li>
-                  <a
-                    href={link.url}
-                    class="block px-4 py-2 rounded-lg hover:bg-accent hover:text-black transition-colors text-[13px] font-bold uppercase tracking-wider"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </nav>
-      </div>
+      <Search trailingSlashes={siteConfig.trailingSlashes} />
+      {lightDarkAutoTheme && <LightDarkAutoButton />}
+      {selectTheme && <SelectTheme />}
+
+      <nav id="nav-mobile" aria-label="Menu" class="sm:hidden relative">
+        <button
+          id="nav-mobile-button"
+          class="icon-button"
+          type="button"
+          aria-expanded="false"
+          aria-controls="nav-mobile-list"
+        >
+          <span class="sr-only">Open menu</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line></svg>
+        </button>
+        <ul
+          id="nav-mobile-list"
+          class="invisible absolute right-0 top-full mt-2 w-44 bg-background border border-separator/40 shadow-lg rounded-xl p-1.5 z-50"
+        >
+          {
+            siteConfig.navLinks.map((link) => (
+              <li>
+                <a
+                  href={link.url}
+                  rel={link.external ? 'noopener noreferrer' : undefined}
+                  target={link.external ? '_blank' : undefined}
+                  class="block px-3 py-2 rounded-lg text-[15px] text-foreground/80 hover:bg-foreground/5 hover:text-foreground"
+                >
+                  {link.name}{link.external && <span class="text-foreground/40"> ↗</span>}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
     </div>
   </div>
 </header>
